@@ -1,0 +1,83 @@
+﻿@using ForumProject.Models
+@page "/books"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IJSRuntime JS
+
+<div class="content-wrapper">
+
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!-- Basic Layout -->
+        <div class="row">
+            <div class="col-xl">
+                <div class="card  ">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Add Aircraft</h5> <small class="text-body float-end">Default label</small>
+                    </div>
+                    <div class="card-body">
+                        <EditForm Model="Book" FormName="book-form" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator />
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="form-floating mb-4 ">
+                                        <InputText @bind-Value="Book.Title" type="text" class="form-control" id="floatingInputFilled" placeholder="My Stories .." />
+                                        <label for="floatingInputFilled">Title</label>
+                                        <ValidationMessage For="@(() => Book.Title)" />
+                                        <span class="form-floating-focused"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  ">
+                                    <div class="form-floating ">
+                                        <InputSelect @bind-Value="Book.Author" id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true" placeholder="140041">
+                                            @{
+                                                var isFirst = false;
+                                                foreach (var value in Enum.GetValues(typeof(Authors)))
+                                                {
+                                                    if (!isFirst)
+                                                    {
+                                                        <option selected value="@((int)value)">@value</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@((int)value)">@value</option>
+                                                    }
+                                                    isFirst = true;
+                                                }
+                                            }
+                                        </InputSelect>
+                                        <label for="select2Basic">Application Type</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
+                                </div>
+                            </div>
+
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@code
+{
+    public Book Book { get; set; } = new();
+
+    public void HandleSubmit()
+    {
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/vendor/libs/select2/select2.js");
+
+        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/vendor/libs/bootstrap-select/bootstrap-select.js");
+
+        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/js/forms-selects.js");
+
+    }
+}

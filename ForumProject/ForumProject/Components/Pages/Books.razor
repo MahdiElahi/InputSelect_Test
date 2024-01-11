@@ -1,4 +1,4 @@
-﻿@using ForumProject.Models
+@using ForumProject.Models
 @page "/books"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject IJSRuntime JS
@@ -13,7 +13,7 @@
             <div class="col-xl">
                 <div class="card  ">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Add Aircraft</h5> <small class="text-body float-end">Default label</small>
+                        <h5 class="mb-0">Add Book</h5> <small class="text-body float-end">Default label</small>
                     </div>
                     <div class="card-body">
                         <EditForm Model="Book" FormName="book-form" OnValidSubmit="HandleSubmit">
@@ -36,7 +36,7 @@
                                                 {
                                                     if (!isFirst)
                                                     {
-                                                        <option selected value="@((int)value)">@value</option>
+                                                        <option selected="selected" value="@((int)value)">@value</option> 
                                                     }
                                                     else
                                                     {
@@ -49,18 +49,18 @@
                                         <label for="select2Basic">Application Type</label>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
-                                </div>
-                            </div>
 
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
+                            </div>
                         </EditForm>
+
                     </div>
                 </div>
             </div>
+
         </div>
-
-
     </div>
 </div>
 @code
@@ -71,13 +71,9 @@
     {
 
     }
-    protected override async Task OnInitializedAsync()
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/vendor/libs/select2/select2.js");
-
-        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/vendor/libs/bootstrap-select/bootstrap-select.js");
-
-        await JS.InvokeAsync<IJSObjectReference>("import", "./admin-template/js/forms-selects.js");
-
+        if (firstRender)
+            await JS.InvokeVoidAsync("InitialSelect");
     }
 }
